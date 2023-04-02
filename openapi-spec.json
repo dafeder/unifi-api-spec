@@ -1,0 +1,336 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Unify API",
+    "description": "Reverse-engineered documentation of Unify API.",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "0.1.0"
+  },
+  "externalDocs": {
+    "description": "Some link",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "https://exmaple.com/api/v1"
+    }
+  ],
+  "paths": {
+    "/api/self": {
+      "get": {
+        "summary": "Get self",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/self"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        }
+      }
+    },
+    "/api/s/{site}/stat/report/{interval}.ap": {
+      "post": {
+        "summary": "Get AP traffic stats",
+        "parameters": [
+          {"$ref": "#/components/parameters/site"},
+          {"$ref": "#/components/parameters/interval"}
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/statRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apStat"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/s/{site}/stat/report/{interval}.site": {
+      "post": {
+        "summary": "Get site traffic stats",
+        "parameters": [
+          {"$ref": "#/components/parameters/site"},
+          {"$ref": "#/components/parameters/interval"}
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/statRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://raw.githubusercontent.com/rdpickard/unifi_client/pre_anything/schemas/unifi_controller_api/v1/unifi_api_s_site_stat_report_by_site_schema.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "site": {
+        "name": "site",
+        "in": "path",
+        "description": "name of site. must be known by controller. Known sites names can be gotten from /api/self/sites",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "default"
+        }
+      },
+      "interval": {
+        "name": "interval",
+        "in": "path",
+        "description": "name of site. must be known by controller. Known sites names can be gotten from /api/self/sites",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "5minutes",
+            "hourly",
+            "daily"
+          ]
+        }
+      }
+    },
+    "schemas": {
+      "statRequestBody": {
+        "title": "Unifi Controller stat request payload",
+        "type": "object",
+        "properties": {
+          "attrs":  {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "bytes",
+                "wan-tx_bytes",
+                "wan-rx_bytes",
+                "wlan_bytes",
+                "num_sta",
+                "lan-num_sta",
+                "wlan-num_sta",
+                "time",
+                "rx_bytes",
+                "tx_bytes"
+              ]
+            }
+          },
+          "start": {
+            "title": "Start time",
+            "type": "integer",
+            "description": "Unix timestamp in miliseconds",
+            "example": 1680454657723
+          },
+          "end": {
+            "title": "End time",
+            "type": "integer",
+            "description": "Unix timestamp in miliseconds",
+            "example": 1680454657723
+          }
+        }
+      },
+      "self": {
+        "title": "Unifi Controller API self response",
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "rc": {
+                "type": "string",
+                "enum": ["ok"]
+              }
+            },
+            "required": ["rc"],
+            "additionalProperties": false
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "admin_id": {"type": "string"},
+                "device_id": {"type": "string"},
+                "email": {"type": "string"},
+                "email_alert_enabled": {"type": "boolean"},
+                "email_alert_grouping_delay": {"type": "number"},
+                "email_alert_grouping_enabled": {"type": "boolean"},
+                "html_email_enabled": {"type": "boolean"},
+                "is_owner": {"type": "boolean"},
+                "is_professional_installer": {"type": "boolean"},
+                "is_super": {"type": "boolean"},
+                "last_site_name": {"type": "string"},
+                "name": {"type": "string"},
+                "push_alert_enabled": {"type": "boolean"},
+                "requires_new_password": {"type": "boolean"},
+                "super_site_permissions": {
+                  "type": "array",
+                  "description": "don't know what this is an array of -rdp"
+                },
+                "ubic_name": {"type": "string"},
+                "ubic_uuid": {"type": "string"},
+                "surveys": {
+                  "type": "object",
+                  "description": "don't know the properties of this object -rdp"
+                },
+                "ui_settings": {
+                  "type": "object",
+                  "description": "don't know the properties of this object -rdp"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["meta", "data"],
+        "additionalProperties": false
+      },
+      "apStat": {
+        "title": "Unifi Controller API Traffic Stats By AP",
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "rc": {
+                "type": "string",
+                "enum": [
+                  "ok"
+                ]
+              }
+            },
+            "required": [
+              "rc"
+            ],
+            "additionalProperties": false
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "bytes": {"type": "number"},
+                "num_sta": {"type": "number"},
+                "rx_bytes": {"type": "number"},
+                "tx_bytes": {"type": "number"},
+                "time": {"type": "number"},
+                "ap": {"type": "string"},
+                "o": {"type": "string"},
+                "oid": {"type": "string"}
+              },
+              "required": ["oid","o","ap","time","tx_bytes","rx_bytes","bytes", "num_sta"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "meta",
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "siteStat": {
+        "title": "Unifi Controller API Traffic Stats By Site",
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "rc": {
+                "type": "string",
+                "enum": [
+                  "ok"
+                ]
+              }
+            },
+            "required": [
+              "rc"
+            ],
+            "additionalProperties": false
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "wan-tx_bytes": {"type": "number"},
+                "wan-rx_bytes": {"type": "number"},
+                "wlan_bytes": {"type": "number"},
+                "num_sta": {"type": "number"},
+                "lan-num_sta": {"type": "number"},
+                "wlan-num_sta": {"type": "number"},
+                "time": {"type": "number"},
+                "site": {"type": "string"},
+                "o": {"type": "string"},
+                "oid": {"type": "string"}
+              },
+              "required": ["oid","o","site","time","wlan-num_sta","lan-num_sta","num_sta","wan-tx_bytes", "wan-rx_bytes", "wlan_bytes"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "meta",
+          "data"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "petstore_auth": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "https://petstore3.swagger.io/oauth/authorize",
+            "scopes": {
+              "write:pets": "modify pets in your account",
+              "read:pets": "read your pets"
+            }
+          }
+        }
+      },
+      "api_key": {
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "header"
+      }
+    }
+  }
+}
