@@ -111,7 +111,7 @@
         "required": true,
         "schema": {
           "type": "string",
-          "example": "default"
+          "examples": ["default"]
         }
       },
       "interval": {
@@ -156,13 +156,13 @@
             "title": "Start time",
             "type": "integer",
             "description": "Unix timestamp in miliseconds",
-            "example": 1680454657723
+            "examples": [1680454657723]
           },
           "end": {
             "title": "End time",
             "type": "integer",
             "description": "Unix timestamp in miliseconds",
-            "example": 1680454657723
+            "examples": [1680454657723]
           }
         }
       },
